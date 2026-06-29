@@ -18,7 +18,7 @@ import java.net.URI;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JsonPlaceholderService {
+public class UserService {
 
     private final ObjectMapper objectMapper;
 
