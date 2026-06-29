@@ -22,24 +22,20 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
 
+                .headers(headers ->
+                        headers.frameOptions(frame -> frame.sameOrigin())
+                )
+
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/","/h2-console/**").permitAll()
+                        .requestMatchers("/user/**").hasRole("ADMIN")
+                        .requestMatchers("/posts/**").hasAnyRole("ADMIN","USER")
                         .anyRequest().authenticated()
                 )
 
                 .httpBasic(Customizer.withDefaults());
 
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-
-        UserDetails user= User.withUsername("archak")
-                .password(passwordEncoder().encode("archak@17"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
     }
 
     @Bean

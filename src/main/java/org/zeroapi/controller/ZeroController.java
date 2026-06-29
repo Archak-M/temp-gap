@@ -32,6 +32,7 @@ public class ZeroController {
     @GetMapping("/user/{id}")
     public UserResponse getStudents(@PathVariable int id){
         try {
+            logUser(SecurityContextHolder.getContext().getAuthentication());
             return service.getUser(id);
         }catch (Exception e){
             log.error(e.getLocalizedMessage());
@@ -43,6 +44,7 @@ public class ZeroController {
     @GetMapping("/user/{id}/{field}")
     public String getUserParameter(@PathVariable int id, @PathVariable String field){
         try {
+            logUser(SecurityContextHolder.getContext().getAuthentication());
             return service.getField(id, field);
         }catch (Exception e){
             log.error(e.getLocalizedMessage());
@@ -52,9 +54,11 @@ public class ZeroController {
 
     @GetMapping("/posts/{id}")
     public PostResponse getPost(@PathVariable int id){
-        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
-        log.info("The user currently accessing this is {}\nThe role is {}",authentication.getName(),authentication.getAuthorities());
-
+        logUser(SecurityContextHolder.getContext().getAuthentication());
         return postService.getPost(id);
+    }
+
+    private void logUser(Authentication authentication){
+        log.info("The user currently accessing this is {}\nThe role is {}",authentication.getName(),authentication.getAuthorities());
     }
 }
