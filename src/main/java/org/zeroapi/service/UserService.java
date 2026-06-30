@@ -8,6 +8,7 @@ import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.zeroapi.dto.UserResponse;
 
@@ -23,10 +24,11 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
     @Cacheable(value = "users", key = "#id")
+    @PreAuthorize("hasRole(ADMIN)")
     public UserResponse getUser(int id) throws Exception{
 
         StringBuilder uri = new StringBuilder("https://jsonplaceholder.typicode.com/users/");
-        uri = uri.append(String.valueOf(id));
+        uri = uri.append(id);
 
         URI apiUri = new URI(uri.toString());
 
@@ -46,7 +48,7 @@ public class UserService {
     public String getField(int id, String field) throws Exception {
         UserResponse user = getUser(id);
 
-        log.info("fetched User succesfully. Details are \n {}",String.valueOf(user));
+        log.info("fetched User succesfully. Details are \n {}", user);
 
         Field fieldName = UserResponse.class.getDeclaredField(field);
         fieldName.setAccessible(true);
