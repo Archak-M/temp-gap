@@ -24,7 +24,7 @@ public class UserService {
     private final ObjectMapper objectMapper;
 
     @Cacheable(value = "users", key = "#id")
-    @PreAuthorize("hasRole(ADMIN)")
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse getUser(int id) throws Exception{
 
         StringBuilder uri = new StringBuilder("https://jsonplaceholder.typicode.com/users/");
